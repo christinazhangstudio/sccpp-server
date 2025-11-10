@@ -4,6 +4,7 @@
 
     <application android:label="SccppServer">
         <service android:name=".Server"
+                 android:exported="true"
                  android:foregroundServiceType="mediaProjection" />
     </application>
 </manifest>

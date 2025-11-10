@@ -2,14 +2,15 @@ package com.cz.sccppserver;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.LocalServerSocket;
+import android.net.LocalSocket;
 import android.os.IBinder;
 import android.util.Log;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Server extends Service {
   private static final String TAG = "SccppServer";
@@ -25,40 +26,40 @@ public class Server extends Service {
   }
 
   private void runServer() {
+    LocalServerSocket serverSocket = null;
     try {
-      ServerSocket serverSocket = new ServerSocket();
-      serverSocket.setReuseAddress(true);
-      serverSocket.bind(new java.net.InetSocketAddress(0));
-
-      Log.i(TAG, "server listening on localabstract:sccpp");
+      serverSocket = new LocalServerSocket(SOCKET_NAME);
+      Log.i(TAG, "local server listening on localabstract:sccpp");
 
       // adb forward
       while(true) {
-        Socket client = serverSocket.accept();
+        LocalSocket client = serverSocket.accept();
         new Thread(() -> handleClient(client)).start();
       }
     } catch (Exception e) {
       Log.e(TAG, "server error", e);
+    } finally {
+      if (serverSocket != null) try { serverSocket.close(); } catch (Exception ignored) {}
     }
   }
 
-  private void handleClient(Socket client) {
+  private void handleClient(LocalSocket client) {
     try(
       DataInputStream in = new DataInputStream(client.getInputStream());
       DataOutputStream out = new DataOutputStream(client.getOutputStream())) 
     {
       // read the "sccpp" handshake
-      byte[] handshake = new byte[8];
+      byte[] handshake = new byte[5];
       in.readFully(handshake);
       if(!new String(handshake).equals("sccpp")) {
-        Log.w(TAG, "invalid handshake");
+        Log.e(TAG, "invalid handshake; got: " + new String(handshake));
         return;
       }
       Log.i(TAG, "handshake succeeded");
 
       // send device name
       String deviceName = android.os.Build.MODEL;
-      out.write(deviceName.getBytes("UTF-8"));
+      out.write(deviceName.getBytes(StandardCharsets.UTF_8));
       out.write(0); // null term
       Log.i(TAG, "send device name: " + deviceName);
 
@@ -66,6 +67,8 @@ public class Server extends Service {
       sendFakeVideo(out);
     } catch (Exception e) {
       Log.e(TAG, "client error", e);
+    } finally {
+      try { client.close(); } catch (Exception ignored) {}
     }
   }
 

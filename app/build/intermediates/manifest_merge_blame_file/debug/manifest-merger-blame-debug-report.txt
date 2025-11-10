@@ -15,53 +15,20 @@
 12-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:5-77
 12-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:22-74
 13
-14    <permission
-14-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
-15        android:name="com.cz.sccppserver.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-15-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
-16        android:protectionLevel="signature" />
-16-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
-17
-18    <uses-permission android:name="com.cz.sccppserver.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-18-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
-18-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
-19
-20    <application
-20-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:5-8:19
-21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-21-->[androidx.core:core:1.9.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\4472b8ca350bb1ebf6c6992b08048827\workspace\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
-22        android:debuggable="true"
-23        android:extractNativeLibs="true"
-24        android:label="SccppServer" >
-24-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:18-45
-25        <service
-25-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:9-7:68
-26            android:name="com.cz.sccppserver.Server"
-26-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-40
-27            android:foregroundServiceType="mediaProjection" />
-27-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:7:18-65
-28
-29        <provider
-29-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
-30            android:name="androidx.startup.InitializationProvider"
-30-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
-31            android:authorities="com.cz.sccppserver.androidx-startup"
-31-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
-32            android:exported="false" >
-32-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
-33            <meta-data
-33-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
-34                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-34-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
-35                android:value="androidx.startup" />
-35-->[androidx.emoji2:emoji2:1.2.0] C:\Users\chris\.gradle\caches\9.2.0\transforms\57f264ea080af971f85d29950e5d601b\workspace\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
-36            <meta-data
-36-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\chris\.gradle\caches\9.2.0\transforms\450b1fa6dc341db244832050ac6bfa79\workspace\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
-37                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-37-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\chris\.gradle\caches\9.2.0\transforms\450b1fa6dc341db244832050ac6bfa79\workspace\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
-38                android:value="androidx.startup" />
-38-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\chris\.gradle\caches\9.2.0\transforms\450b1fa6dc341db244832050ac6bfa79\workspace\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
-39        </provider>
-40    </application>
-41
-42</manifest>
+14    <application
+14-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:5-9:19
+15        android:debuggable="true"
+16        android:extractNativeLibs="true"
+17        android:label="SccppServer" >
+17-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:18-45
+18        <service
+18-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:9-8:68
+19            android:name="com.cz.sccppserver.Server"
+19-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-40
+20            android:exported="true"
+20-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:7:18-41
+21            android:foregroundServiceType="mediaProjection" />
+21-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:8:18-65
+22    </application>
+23
+24</manifest>
