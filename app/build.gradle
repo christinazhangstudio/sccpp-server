@@ -1,8 +1,13 @@
+plugins {
+    id 'com.android.application'
+}
+
 android {
+    namespace 'com.cz.sccppserver'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.cz.scrcpyserver"
+        applicationId "com.cz.sccppserver"
         minSdk 21
         targetSdk 34
         versionCode 1
