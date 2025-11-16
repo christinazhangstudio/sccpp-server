@@ -11,7 +11,6 @@ import android.media.projection.MediaProjectionManager;
 import android.media.MediaFormat;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
-import android.media.MediaCodecList;
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 import android.os.IBinder;
@@ -73,7 +72,7 @@ public class ServerService extends Service {
     }, new Handler(Looper.getMainLooper()));
 
     new Thread(this::runServer).start();
-    return START_STICKY;
+    return START_NOT_STICKY; // prevents Android from restarting service without projection data ?
   }
 
   private void runServer() {
@@ -207,15 +206,27 @@ public class ServerService extends Service {
       Surface inputSurface = encoder.createInputSurface();
       encoder.start();
 
-      projection.createVirtualDisplay(
-              "sccpp_encoder",
-              width, height, dpi,
-              DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
-              inputSurface,
-              null, null
-      );
+      // "Android requires VirtualDisplay creation on a Looper-attached thread,
+      // the main thread. Otherwise, MediaProjection sometimes thinks you’re
+      // using a “non-current” projection."
+      //      projection.createVirtualDisplay(
+      //              "sccpp_encoder",
+      //              width, height, dpi,
+      //              DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
+      //              inputSurface,
+      //              null, null
+      //      );
+      new Handler(Looper.getMainLooper()).post(() -> {
+        projection.createVirtualDisplay(
+                "sccpp_encoder",
+                width, height, dpi,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
+                inputSurface,
+                null, null
+        );
+      });
 
-      Log.i(TAG, "encoder + VirtualDisplay started");
+      Log.i(TAG, "encoder & VirtualDisplay started");
 
       android.media.MediaCodec.BufferInfo info = new android.media.MediaCodec.BufferInfo();
       boolean first = true;
@@ -252,7 +263,6 @@ public class ServerService extends Service {
 
       encoder.stop();
       encoder.release();
-      projection.stop();
     } catch (Exception e) {
       Log.e(TAG, "screen capture error", e);
     }
