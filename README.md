@@ -8,6 +8,11 @@
 
 `compileSdk`/`targetSdk` = `34`
 
+Android Studio is friendlier than VSCode for this:
+![alt text](docs/imgs/androidstudio1.png)
+
+![alt text](docs/imgs/androidstudio2.png)
+
 ## compiling
 
 ```
