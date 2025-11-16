@@ -1,32 +1,82 @@
 package com.cz.sccppserver;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.hardware.display.DisplayManager;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
+import android.media.MediaFormat;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 import android.os.IBinder;
 import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.WindowManager;
+import android.view.Surface;
+import android.util.DisplayMetrics;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class Server extends Service {
-  private static final String TAG = "SccppServer";
+public class ServerService extends Service {
+  private static final String TAG = "SccppServerService";
   private static final String SOCKET_NAME = "sccpp";
+
+  // activity-related
+  private static final String CHANNEL_ID = "scrcpy_channel";
+  private static final int NOTIFICATION_ID = 1;
+
+  private MediaProjectionManager projectionManager;
+  private MediaProjection projection;
+  private LocalServerSocket serverSocket;
 
   @Override
   public IBinder onBind(Intent intent) { return null; }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
+    createNotificationChannel();
+    startForeground(NOTIFICATION_ID, createNotification());
+
+    projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+    int resultCode = intent.getIntExtra("resultCode", android.app.Activity.RESULT_CANCELED);
+    Intent data = intent.getParcelableExtra("data");
+
+    if (resultCode != android.app.Activity.RESULT_OK || data == null) {
+      Log.e(TAG, "Invalid resultCode or data");
+      stopSelf();
+      return START_NOT_STICKY;
+    }
+
+    projection = projectionManager.getMediaProjection(resultCode, data);
+    if (projection == null) {
+      Log.e(TAG, "Failed to get MediaProjection");
+      stopSelf();
+      return START_NOT_STICKY;
+    }
+
+    projection.registerCallback(new MediaProjection.Callback() {
+      @Override
+      public void onStop() {
+        Log.i(TAG, "MediaProjection stopped");
+        stopSelf();
+      }
+    }, new Handler(Looper.getMainLooper()));
+
     new Thread(this::runServer).start();
     return START_STICKY;
   }
 
   private void runServer() {
-    LocalServerSocket serverSocket = null;
     try {
       serverSocket = new LocalServerSocket(SOCKET_NAME);
       Log.i(TAG, "local server listening on localabstract:sccpp");
@@ -63,9 +113,14 @@ public class Server extends Service {
       out.write(0); // null term
       Log.i(TAG, "sent device name: " + deviceName);
 
-      Log.i(TAG, "sending fake video");
-      sendFakeVideo(out);
-      Log.i(TAG, "finished sending fake video");
+      printSpecs();
+
+      // Log.i(TAG, "sending fake video");
+      // sendFakeVideo(out);
+      // Log.i(TAG, "finished sending fake video");
+      Log.i(TAG, "sending real video");
+      startScreenCapture(out);
+      Log.i(TAG, "finished sending real video");
     } catch (Exception e) {
       Log.e(TAG, "client error", e);
     } finally {
@@ -73,8 +128,162 @@ public class Server extends Service {
     }
   }
 
+  private void printSpecs() {
+    try {
+      MediaCodec encoder = MediaCodec.createEncoderByType("video/avc");
 
-   private void sendFakeVideo(DataOutputStream out) throws IOException {
+      // Get codec info from the encoder instance
+      MediaCodecInfo codecInfo = encoder.getCodecInfo();
+      MediaCodecInfo.CodecCapabilities caps = codecInfo.getCapabilitiesForType("video/avc");
+
+      Log.i(TAG, "encoder name: " + codecInfo.getName());
+
+      // print profile/levels
+      MediaCodecInfo.CodecProfileLevel[] pls = caps.profileLevels;
+      if (pls != null && pls.length > 0) {
+        for (MediaCodecInfo.CodecProfileLevel pl : pls) {
+          Log.i(TAG, "profile=" + pl.profile + " level=" + pl.level);
+        }
+      } else {
+        Log.i(TAG, "no profileLevels reported");
+      }
+
+      // print color formats
+      int[] cfs = caps.colorFormats;
+      if (cfs != null && cfs.length > 0) {
+        for (int cf : cfs) {
+          Log.i(TAG, "colorFormat=" + cf);
+        }
+      } else {
+        Log.i(TAG, "no colorFormats reported");
+      }
+
+      // IMPORTANT: release encoder if you won't use it now (we only wanted info)
+      encoder.release();
+
+    } catch (IOException e) {
+      Log.e(TAG, "failed to create encoder", e);
+    }
+  }
+
+  private void startScreenCapture(DataOutputStream out) {
+    try {
+      DisplayMetrics metrics = new DisplayMetrics();
+      WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+      wm.getDefaultDisplay().getMetrics(metrics);
+      int rawWidth = metrics.widthPixels;
+      int rawHeight = metrics.heightPixels;
+      int dpi = metrics.densityDpi;
+
+      // Samsung Exynos encoders require width and height
+      // to be multiples of 16
+      int width = (rawWidth + 15) & ~15;
+      int height = (rawHeight + 15) & ~15;
+
+      // MediaCodec encoder
+      MediaCodec encoder = MediaCodec.createEncoderByType("video/avc");
+      MediaFormat format = MediaFormat.createVideoFormat("video/avc", width, height);
+      format.setInteger(MediaFormat.KEY_BIT_RATE, 4000000);
+      format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+      format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+      format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
+              android.media.MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+
+      // required for Exynos H.264 encoder:
+      format.setInteger(MediaFormat.KEY_PROFILE,
+              MediaCodecInfo.CodecProfileLevel.AVCProfileBaseline);
+      format.setInteger(MediaFormat.KEY_LEVEL,
+              MediaCodecInfo.CodecProfileLevel.AVCLevel31);
+
+      format.setInteger(MediaFormat.KEY_BITRATE_MODE,
+              MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR);
+
+      try {
+        encoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+      } catch (IllegalArgumentException e) {
+        throw new Exception("configure failed: " + e);
+      }
+
+      Surface inputSurface = encoder.createInputSurface();
+      encoder.start();
+
+      projection.createVirtualDisplay(
+              "sccpp_encoder",
+              width, height, dpi,
+              DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
+              inputSurface,
+              null, null
+      );
+
+      Log.i(TAG, "encoder + VirtualDisplay started");
+
+      android.media.MediaCodec.BufferInfo info = new android.media.MediaCodec.BufferInfo();
+      boolean first = true;
+
+      while(true) {
+        int outIndex = encoder.dequeueOutputBuffer(info, 1000);
+        if(outIndex >= 0) {
+          java.nio.ByteBuffer buf = encoder.getOutputBuffer(outIndex);
+          if(buf == null) {
+            throw new Exception("buf nil");
+          }
+          byte[] nal = new byte[info.size];
+          buf.get(nal);
+          buf.position(info.offset);
+          buf.limit(info.offset + info.size);
+
+          out.writeLong(System.nanoTime() / 1000);
+          out.writeInt(nal.length);
+          out.write(nal);
+          out.flush();
+
+          if(first) {
+            Log.i(TAG, "first real frame sent: " + nal.length + "bytes");
+            first = false;
+          }
+
+          encoder.releaseOutputBuffer(outIndex, false);
+        }
+
+        if((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+          break;
+        }
+      }
+
+      encoder.stop();
+      encoder.release();
+      projection.stop();
+    } catch (Exception e) {
+      Log.e(TAG, "screen capture error", e);
+    }
+  }
+
+  private void createNotificationChannel() {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Scrcpy Service", NotificationManager.IMPORTANCE_LOW);
+      NotificationManager manager = getSystemService(NotificationManager.class);
+      manager.createNotificationChannel(channel);
+    }
+  }
+
+  private Notification createNotification() {
+    return new Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle("Scrcpy Server")
+            .setContentText("Capturing screen")
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .build();
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    if (projection != null) projection.stop();
+    if (serverSocket != null) {
+      try { serverSocket.close(); } catch (Exception ignored) {}
+    }
+  }
+
+  private void sendFakeVideo(DataOutputStream out) throws IOException {
     // will throw:
     // [INFO]: received NAL; 15 bytes
     //[h264 @ 00000278ae3b8940] Overread SPS by 8 bits

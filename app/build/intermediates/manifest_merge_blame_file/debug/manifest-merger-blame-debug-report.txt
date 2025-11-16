@@ -14,21 +14,47 @@
 12    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 12-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:5-77
 12-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:22-74
-13
-14    <application
-14-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:5-9:19
-15        android:debuggable="true"
-16        android:extractNativeLibs="true"
-17        android:label="SccppServer" >
-17-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:18-45
-18        <service
-18-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:9-8:68
-19            android:name="com.cz.sccppserver.Server"
-19-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-40
-20            android:exported="true"
-20-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:7:18-41
-21            android:foregroundServiceType="mediaProjection" />
-21-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:8:18-65
-22    </application>
-23
-24</manifest>
+13    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+13-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:4:5-94
+13-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:4:22-91
+14
+15    <application
+15-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:5-22:19
+16        android:debuggable="true"
+17        android:extractNativeLibs="true"
+18        android:label="SccppServer" >
+18-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-45
+19
+20        <!-- Activity to request permission -->
+21        <activity
+21-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:8:9-16:20
+22            android:name="com.cz.sccppserver.MainActivity"
+22-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:9:13-41
+23            android:exported="true"
+23-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:10:13-36
+24            android:launchMode="singleTask" >
+24-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:11:13-44
+25            <intent-filter>
+25-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:12:13-15:29
+26                <action android:name="android.intent.action.MAIN" />
+26-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:13:17-69
+26-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:13:25-66
+27
+28                <category android:name="android.intent.category.LAUNCHER" />
+28-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:14:17-77
+28-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:14:27-74
+29            </intent-filter>
+30        </activity>
+31
+32        <!-- Foreground service for capture -->
+33        <service
+33-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:19:9-21:68
+34            android:name="com.cz.sccppserver.ServerService"
+34-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:19:18-47
+35            android:exported="true"
+35-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:20:18-41
+36            android:foregroundServiceType="mediaProjection" />
+36-->C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:21:18-65
+37    </application>
+38
+39</manifest>

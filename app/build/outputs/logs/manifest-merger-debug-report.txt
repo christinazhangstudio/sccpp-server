@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-10:12
-INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-10:12
-INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-10:12
-INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-10:12
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-23:12
+INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-23:12
+INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-23:12
+INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:1:1-23:12
 	package
 		INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -20,21 +20,43 @@ uses-permission#android.permission.FOREGROUND_SERVICE
 ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:5-77
 	android:name
 		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:3:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:4:5-94
+	android:name
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:4:22-91
 application
-ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:5-9:19
-INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:5-9:19
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:5-22:19
+INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:5-22:19
 	android:extractNativeLibs
 		INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml
 	android:label
-		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:5:18-45
-service#com.cz.sccppserver.Server
-ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:9-8:68
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-45
+activity#com.cz.sccppserver.MainActivity
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:8:9-16:20
+	android:launchMode
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:11:13-44
 	android:exported
-		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:7:18-41
-	android:foregroundServiceType
-		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:8:18-65
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:10:13-36
 	android:name
-		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:6:18-40
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:9:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:12:13-15:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:13:17-69
+	android:name
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:13:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:14:17-77
+	android:name
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:14:27-74
+service#com.cz.sccppserver.ServerService
+ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:19:9-21:68
+	android:exported
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:20:18-41
+	android:foregroundServiceType
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:21:18-65
+	android:name
+		ADDED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml:19:18-47
 uses-sdk
 INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\chris\sccpp-server\app\src\main\AndroidManifest.xml
